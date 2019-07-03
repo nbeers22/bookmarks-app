@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { withRouter,Route } from 'react-router-dom';
 
 import AddBookmark from './AddBookmark/AddBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
+import EditBookmark from './EditBookmark/EditBookmark';
 import Nav from './Nav/Nav';
 import config from './config';
 
@@ -28,7 +29,7 @@ class App extends Component {
     })
   }
   
-  updateBookmarks = bookmarkId => {
+  deleteBookmark = bookmarkId => {
     const bookmarks = this.state.bookmarks.filter( bookmark => (
       bookmark.id !== bookmarkId
     ));
@@ -79,13 +80,20 @@ class App extends Component {
             render={() => 
               <BookmarkList
                 bookmarks={this.state.bookmarks}
-                updateBookmarks={this.updateBookmarks}
+                deleteBookmark={this.deleteBookmark}
               />}
           />
+          <Route
+            path='/edit/:id'
+            render={() => 
+              <EditBookmark/>
+            }
+          />
+
         </div>
       </main>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

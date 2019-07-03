@@ -1,10 +1,61 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom';
 
-export default class EditBookmark extends Component {
+import config from '../config';
+
+const Required = () => (
+  <span className='AddBookmark__required'>*</span>
+)
+
+class EditBookmark extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      error: null,
+      title: '',
+      url: '',
+      description: '',
+      rating: null
+    }
+  }
+
+  componentDidMount(){
+    const bookmarkId = this.props.match.params.id;
+
+    // get data from current bookmarkId to
+    // populate form fields
+    fetch(`${config.API_ENDPOINT}/${bookmarkId}`,{
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+        'Authorization': `Bearer ${config.API_KEY}`
+      }
+    })
+    .then(res => {
+      if(!res.ok)
+        throw new Error(res.status)
+      return res.json();
+    })
+    .then(data => {
+      this.setState({
+        title: data.title,
+        url: data.url,
+        description: data.description,
+        rating: data.rating
+      });
+    });
+  }
+
+  onClickSave = event => {
+
+  }
+
   render() {
+    const { error, title, rating, url, description } = this.state
+
     return (
       <section className="EditBookmark">
-        <h2>Create a bookmark</h2>
+        <h2>Edit bookmark</h2>
         <form
           className='AddBookmark__form'
           onSubmit={this.handleSubmit}
@@ -22,6 +73,7 @@ export default class EditBookmark extends Component {
               type='text'
               name='title'
               id='title'
+              value={title}
               required
             />
           </div>
@@ -35,6 +87,7 @@ export default class EditBookmark extends Component {
               type='url'
               name='url'
               id='url'
+              value={url}
               required
             />
           </div>
@@ -45,6 +98,7 @@ export default class EditBookmark extends Component {
             <textarea
               name='description'
               id='description'
+              value={description}
             />
           </div>
           <div>
@@ -57,18 +111,18 @@ export default class EditBookmark extends Component {
               type='number'
               name='rating'
               id='rating'
-              defaultValue='1'
+              value={rating}
               min='1'
               max='5'
               required
             />
           </div>
           <div className='AddBookmark__buttons'>
-            <button type='button' onClick={onClickCancel}>
+            <button type='button' onClick={() => this.props.history.push('/')}>
               Cancel
             </button>
             {' '}
-            <button type='submit'>
+            <button type='submit' onclick={this.onClickSave}>
               Save
             </button>
           </div>
@@ -77,3 +131,5 @@ export default class EditBookmark extends Component {
     )
   }
 }
+
+export default withRouter(EditBookmark);

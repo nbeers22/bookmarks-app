@@ -8,7 +8,7 @@ class BookmarkList extends Component {
     bookmarks: []
   };
 
-  handleEditDelete = (id,method) => {
+  handleDelete = (id,method) => {
     fetch(`${config.API_ENDPOINT}/${id}`, {
       method,
       headers: {
@@ -31,7 +31,7 @@ class BookmarkList extends Component {
           {bookmarks.map(bookmark =>
             <BookmarkItem
               key={bookmark.id}
-              handleEditDelete={this.handleEditDelete}
+              handleDelete={this.handleDelete}
               {...bookmark}
             />
           )}
