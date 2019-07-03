@@ -18,8 +18,6 @@ class BookmarkList extends Component {
     })
     .then( res => {
       if(!res.ok) throw new Error(res.status)
-      // setState to update bookmark list
-      // without newly deleted bookmark
       this.props.updateBookmarks(id);
     })
   }
