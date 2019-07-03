@@ -29,6 +29,15 @@ class App extends Component {
       bookmarks: [ ...this.state.bookmarks, bookmark ],
     })
   }
+  
+  updateBookmarks = bookmarkId => {
+    const bookmarks = this.state.bookmarks.filter( bookmark => (
+      bookmark.id !== bookmarkId
+    ));
+    this.setState({
+      bookmarks
+    })
+  }
 
   componentDidMount() {
     fetch(config.API_ENDPOINT, {
@@ -64,6 +73,7 @@ class App extends Component {
           {page === 'list' && (
             <BookmarkList
               bookmarks={bookmarks}
+              updateBookmarks={this.updateBookmarks}
             />
           )}
         </div>

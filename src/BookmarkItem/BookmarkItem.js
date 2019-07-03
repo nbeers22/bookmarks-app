@@ -22,9 +22,15 @@ export default function BookmarkItem(props) {
       <div className='BookmarkItem__buttons'>
         <button
           className='BookmarkItem__description'
-          onClick={() => props.onClickDelete(props.id)}
+          onClick={() => props.handleEditDelete(props.id,'DELETE')}
         >
           Delete
+        </button>
+        <button
+          className='BookmarkItem__description'
+          onClick={() => props.handleEditDelete(props.id,'PATCH')}
+        >
+          Edit
         </button>
       </div>
     </li>
