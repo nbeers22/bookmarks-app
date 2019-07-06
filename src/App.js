@@ -39,6 +39,10 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.getAllBookmarks();
+  }
+
+  getAllBookmarks(){
     fetch(config.API_ENDPOINT, {
       method: 'GET',
       headers: {

@@ -12,10 +12,12 @@ class EditBookmark extends Component {
     super(props);
     this.state = {
       error: null,
-      title: '',
-      url: '',
-      description: '',
-      rating: null
+      formData: {
+        title: '',
+        url: '',
+        description: '',
+        rating: ''
+      }
     }
   }
 
@@ -38,20 +40,50 @@ class EditBookmark extends Component {
     })
     .then(data => {
       this.setState({
-        title: data.title,
-        url: data.url,
-        description: data.description,
-        rating: data.rating
+        formData: {
+          title: data.title,
+          url: data.url,
+          description: data.description,
+          rating: data.rating
+        }
       });
     });
   }
 
-  onClickSave = event => {
+  handleFormChange = event => {
+    const { name,value } = event.target;
+    this.setState({
+      formData: {
+        ...this.state.formData,
+        [name]: value
+      }
+    });
+  }
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const bookmarkId = this.props.match.params.id;
+    const { formData } = this.state;
+    console.log(formData)
+
+    fetch(`${config.API_ENDPOINT}/${bookmarkId}`,{
+      method: 'PATCH',
+      headers: {
+        'content-type': 'application/json',
+        'Authorization': `Bearer ${config.API_KEY}`
+      },
+      body: JSON.stringify( formData )
+    })
+    .then(res => {
+      if(!res.ok)
+        throw new Error(res.status)
+      this.props.history.push('/')
+    })
 
   }
 
   render() {
-    const { error, title, rating, url, description } = this.state
+    const { error, title, rating, url, description } = this.state.formData
 
     return (
       <section className="EditBookmark">
@@ -74,6 +106,7 @@ class EditBookmark extends Component {
               name='title'
               id='title'
               value={title}
+              onChange={this.handleFormChange}
               required
             />
           </div>
@@ -88,6 +121,7 @@ class EditBookmark extends Component {
               name='url'
               id='url'
               value={url}
+              onChange={this.handleFormChange}
               required
             />
           </div>
@@ -99,6 +133,7 @@ class EditBookmark extends Component {
               name='description'
               id='description'
               value={description}
+              onChange={this.handleFormChange}
             />
           </div>
           <div>
@@ -112,6 +147,7 @@ class EditBookmark extends Component {
               name='rating'
               id='rating'
               value={rating}
+              onChange={this.handleFormChange}
               min='1'
               max='5'
               required
@@ -122,7 +158,7 @@ class EditBookmark extends Component {
               Cancel
             </button>
             {' '}
-            <button type='submit' onclick={this.onClickSave}>
+            <button type='submit'>
               Save
             </button>
           </div>
